@@ -55,25 +55,40 @@ console.log('============================================');
 
 //3.Реализовать цепочку протитопов с помощью функций конструкторов
 
-function CreateObject(name, proto) {
+function Person(name, age) {
     this.name = name;
-    this.__proto__ = proto;
+    this.age = age;
 }
 
-let object_a = new CreateObject('Object_a');
-object_a.greet = function () {
-    console.log(`Hi, I'm ${this.name}`);
-};
+Person.prototype.getInfo = function () {
+    console.log(`Name: ${this.name}, age: ${this.age}`);
+}
 
-let object_b = new CreateObject('Object_b', object_a);
-object_b.logInfo = function () {
-    console.log(`I'm ${this.name}`);
-};
+function Footballer(name, age, number) {
+    Person.apply(this, arguments);
+    // this.position = position;
+    this.number = number;
+}
+Footballer.prototype = Object.create(Person.prototype);
+Footballer.prototype.constructor = Footballer;
+Footballer.prototype.getFootballerInfo = function () {
+    console.group(`Footballer: ${this.name}`)
+    console.log(`Age: ${this.age}`);
+    console.log(`Number: ${this.number}`);
+    console.groupEnd();
+}
 
-let object_c = new CreateObject('Object_c', object_b);
-object_c.sayBye = function () {
-    console.log(`Bye ${this.name}!`);
-};
-console.log(object_c);
-console.log(object_b);
-console.log(object_a);
+function FootballerPosition(name, age, number, position) {
+    Footballer.apply(this, arguments);
+    this.position = position;
+}
+FootballerPosition.prototype = Object.create(Footballer.prototype);
+FootballerPosition.prototype.constructor = FootballerPosition;
+FootballerPosition.prototype.getFootballerPositionInfo = function () {
+    console.log(`Position of ${this.name}: ${this.position}`);
+}
+
+let defender = new FootballerPosition('Virgil van Dijk', 29, 4, 'Defender');
+console.log(defender);
+defender.getFootballerInfo();
+defender.getFootballerPositionInfo();
